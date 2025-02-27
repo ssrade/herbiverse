@@ -4,13 +4,11 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <h1 className='text-3xl bg-green-500 p-3 rounded-xl'>hello world</h1>
-    </>
-  )
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      <h1 className="text-3xl bg-green-500 p-3 rounded-xl text-center">Welcome to Herbiverse</h1>
+    </div>
+  );
 }
 
-export default App
+export default App;
