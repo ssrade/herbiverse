@@ -371,13 +371,13 @@ const ModelViewer = () => {
             )}
 
             {/* Debug Info */}
-            <div className="bg-gray-700 p-2 rounded mb-4 text-xs">
+            {/* <div className="bg-gray-700 p-2 rounded mb-4 text-xs">
               <p>Plant ID: {plantId || "Loading..."}</p>
               <p>View Type: {viewType}</p>
               <p>Model Path: {viewType === '3d' ? modelPath : imagePath}</p>
               <p>Favorite Status: {isCheckingFavorite ? "Checking..." : (isFavorite ? "In Favorites" : "Not in Favorites")}</p>
               <p>User Logged In: {userLoggedIn ? "Yes" : "No"}</p>
-            </div>
+            </div> */}
 
             {/* Success Message */}
             {successMessage && (

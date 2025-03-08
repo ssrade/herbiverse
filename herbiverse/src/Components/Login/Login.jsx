@@ -48,7 +48,7 @@ function Login() {
      <div className="bg-gradient-to-br from-[#FFFAF7] via-[#FFFAF7] to-green-100 p-10 border border-gray-200 rounded-2xl shadow-lg flex w-[900px] h-[500px] backdrop-blur-lg">
         {/* Left Side - Lottie Animation */}
         <div className="flex-1 flex justify-center items-center">
-          <Lottie animationData={loginAnimation} loop={true} className="w-72 h-72" />
+          <Lottie animationData={loginAnimation} loop={false} className="w-72 h-72" />
         </div>
 
         {/* Right Side - Login Form */}
