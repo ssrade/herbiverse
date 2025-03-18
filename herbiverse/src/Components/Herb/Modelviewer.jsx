@@ -304,8 +304,8 @@ const ModelViewer = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-6">
-      <div className="bg-gray-800 bg-opacity-90 rounded-2xl w-full max-w-7xl h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-85 z-50 flex items-center justify-center p-6">
+      <div className="bg-gray-800 bg-opacity-90 rounded-2xl w-full max-w-8xl h-full flex flex-col shadow-2xl overflow-hidden">
         {/* View Type Tabs and Close Button */}
         <div className="flex items-center justify-between px-6 py-3 border-b border-gray-600">
           <div className="flex gap-4">
