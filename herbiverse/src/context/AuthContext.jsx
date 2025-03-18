@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     try {
-      const response = await axios.post('/api/users/signup', { name, email, password });
+      const response = await axios.post('/users/signup', { name, email, password });
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
