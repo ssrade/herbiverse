@@ -5,7 +5,7 @@ import HerbModel from './HerbModel';
 import { 
   isUserLoggedIn, 
   checkFavoriteStatus, 
-  addToFavorites, 
+  addToFavorites,
   removeFromFavorites,
   fetchNotes,
   addNote,
