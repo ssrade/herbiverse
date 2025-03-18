@@ -12,7 +12,7 @@ import plantImage from "../../assets/AdobeStock_903316550_Preview.png";
 
 function Home() {
   return (
-    <div className="font-sans bg-gray-50 min-h-screen">
+    <div className="bg-white fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 font-merriwether">
       {/* Navbar */}
       <nav className="flex justify-between items-center bg-white p-4 shadow-md fixed top-0 left-0 w-full z-10">
         <h1 className="text-xl font-bold text-green-700">Virtual Herbal Garden</h1>
