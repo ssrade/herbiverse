@@ -133,8 +133,8 @@ function Home() {
           <motion.img
             src={plantImage}
             alt="Herbal Plant"
-            className="w-3/4 rounded-lg shadow-xl relative z-10"
-            whileHover={{ rotate: -2, scale: 1.03 }}
+            className="w-3/4 rounded-lg shadow-xl relative z-10 bg-[#c1f4d3]"
+            whileHover={{ scale: 1.07 }}
             transition={{ duration: 0.5 }}
           />
         </motion.div>
