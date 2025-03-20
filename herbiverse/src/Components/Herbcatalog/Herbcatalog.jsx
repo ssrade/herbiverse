@@ -191,13 +191,13 @@ function Herbcatalog() {
   };
 
   return (
-    <div className="bg-[#FFFAF7] fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 font-merriwether">
+    <div className="bg-gradient-to-b from-[#FFFAF7] to-[#DCFCE7] fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 font-merriwether">
       {/* Header Section */}
       <div className="flex justify-center items-center">
         <div className="text-center w-[95vw] flex flex-col items-center mt-[30px]">
-          <div className="flex items-center justify-center mb-2">
+          <div className="flex items-center justify-center mb-2 mt-5">
             <FaLeaf className="text-[#2D513E] mr-2 text-3xl" />
-            <h1 className="text-4xl font-bold text-[#2D513E]">Herb Sanctuary</h1>
+            <h1 className="text-4xl font-bold text-[#2D513E]">Herb Catalog</h1>
           </div>
           <h2 className="text-xl mt-2 font-semibold text-[#7EA172] italic">
             Nature's Healing Wisdom • Curated Collection
