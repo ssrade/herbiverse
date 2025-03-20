@@ -53,38 +53,9 @@ function Home() {
   };
 
   return (
-    <div className="font-sans bg-gradient-to-b from-green-50 to-white min-h-screen overflow-x-hidden">
-      {/* Navbar */}
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex justify-between items-center bg-white p-4 shadow-lg fixed top-0 left-0 w-full z-10"
-      >
-        <h1 className="text-xl font-bold text-emerald-700 flex items-center">
-          <span className="text-2xl mr-2">🌿</span> Virtual Herbal Garden
-        </h1>
-        <ul className="flex space-x-6 font-semibold text-gray-700">
-          {["HOME", "HERB CATALOG", "VIRTUAL TOUR", "FAVOURITES", "ABOUT US"].map((item, index) => (
-            <li key={index} className="hover:text-emerald-500 cursor-pointer transition-all duration-300 relative group">
-              {item}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:w-full"></span>
-            </li>
-          ))}
-        </ul>
-        <div className="flex items-center border border-emerald-200 px-3 py-2 rounded-full bg-white shadow-sm hover:shadow transition-all duration-300">
-          <input
-            type="text"
-            placeholder="Search herbs..."
-            className="outline-none bg-transparent text-gray-600 w-32 focus:w-40 transition-all duration-300"
-          />
-          <button className="ml-2 text-emerald-600 hover:text-emerald-800 transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
-        </div>
-      </motion.nav>
+    <div className="font-sans bg-gradient-to-b from-green-50 to-white fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 ">
+
+  
 
       {/* Hero Section */}
       <section className="flex items-center justify-between bg-gradient-to-r from-emerald-50 to-green-100 p-10 pt-24 mt-10 relative overflow-hidden">
