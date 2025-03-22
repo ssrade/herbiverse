@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^10.0.2",
     "@react-three/fiber": "^9.0.4",
+    "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.0.8",
     "axios": "^1.8.1",
     "framer-motion": "^12.5.0",
