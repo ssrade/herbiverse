@@ -114,7 +114,7 @@ const HerbModel = ({ modelPath, is3D }) => {
   // Key prop forces complete remount every time
   return (
     <div className="h-full w-full">
-      <Canvas key={Date.now()} dpr={[1, 2]}>
+      <Canvas dpr={[1, 2]}>
         <CameraSetup />
         <ambientLight intensity={0.8} />
         <spotLight position={[10, 10, 10]} angle={0.3} penumbra={1} intensity={1} />
