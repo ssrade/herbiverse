@@ -39,7 +39,7 @@ function Home() {
       category: ["stress", "immunity"]
     },
     { 
-      name: "Fennel", 
+      name: "Fennel(saunf)", 
       scientificName: "Foeniculum vulgare",
       category: ["digestion", "culinary"]
     },
