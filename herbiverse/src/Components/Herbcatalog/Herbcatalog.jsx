@@ -235,7 +235,7 @@ function Herbcatalog() {
               className="bg-[#2D513E] text-white p-3 pl-4 pr-5 rounded-r-lg shadow-lg flex items-center transition-all hover:bg-[#1A2F24]"
             >
               <FaFilter />
-              <span className="ml-2 font-medium">Refine</span>
+              <span className="ml-2 font-medium">Filter</span>
             </button>
           </div>
         )}
@@ -249,7 +249,7 @@ function Herbcatalog() {
           <div className="p-8 pt-10">
             <div className="flex justify-between items-center border-b border-[#7EA172] border-opacity-30 pb-4">
               <h3 className="text-xl font-semibold text-[#2D513E] flex items-center">
-                <FaFilter className="mr-2" /> Refine Collection
+                <FaFilter className="mr-2" /> Filter Collection
               </h3>
               <button 
                 onClick={toggleFilters} 
