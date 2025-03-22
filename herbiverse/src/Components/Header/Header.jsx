@@ -37,7 +37,7 @@ function Header() {
   }, [userMenuOpen]);
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex flex-col bg-[#FFFAF7] text-[#136b32] font-merriwether shadow-md z-50">
+    <nav className="fixed top-0 left-0 w-full flex flex-col bg-[#F9FAF5] text-[#136b32] font-merriwether shadow-md z-50">
       <div className="flex w-full items-center px-4 py-4">
         {/* Logo */}
         <NavLink to="/" className="text-2xl font-bold">
