@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import HerbModel from './HerbModel';
+import HerbModel from './Herbmodel';
 
 import { 
   isUserLoggedIn, 
