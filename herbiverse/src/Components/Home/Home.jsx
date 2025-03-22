@@ -190,6 +190,7 @@ function Home() {
   return (
     <div className="bg-gradient-to-b from-[#FFFAF7] to-[#DCFCE7] fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4">
 
+
       {/* Hero Section */}
       <section className="flex items-center justify-between p-20 pt-24 mt-10 relative overflow-hidden">
         {/* Background image container - positioned absolutely */}
@@ -341,8 +342,6 @@ function Home() {
       </motion.section>
 
       <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#7EA172] to-transparent my-8 max-w-6xl mx-auto"></div>
-      
-     
 
       {/* Why Medicinal Plants Section */}
       <section className="text-center mt-10">
