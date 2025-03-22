@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { NavLink, useNavigate } from "react-router-dom";
 import box from "../../assets/box.jpg";
 import net from "../../assets/net.jpg";
 import pot from "../../assets/pot.jpg";
@@ -7,11 +8,16 @@ import image1 from "../../assets/image1.png";
 import image2 from "../../assets/image2.png";
 import image3 from "../../assets/image3.png";
 import image4 from "../../assets/image4.png";
-import plantImage from "../../assets/AdobeStock_903316550_Preview.png";
+import plantImage from "../../assets/heroimage.png";
+import heroBackground from "../../assets/herobackground.png";
+import HerbCard from '../../Components/Herb/Herbcard';
 
 function Home() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentPlantIndex, setCurrentPlantIndex] = useState(0);
+  const [currentMedicinalPlantIndex, setCurrentMedicinalPlantIndex] = useState(0);
+  const navigate = useNavigate();
+
 
   const featuredPlants = [
     { img: pot, name: "Lavender", benefits: "Relaxation, Sleep" },
@@ -21,17 +27,65 @@ function Home() {
     { img: net, name: "Ginger", benefits: "Immunity, Nausea Relief" }
   ];
 
+  const medicinalPlants = [
+    { 
+      name: "Aloe Vera", 
+      scientificName: "Aloe barbadensis miller",
+      category: ["skin", "healing"]
+    },
+    { 
+      name: "Ashwagandha", 
+      scientificName: "Withania somnifera",
+      category: ["stress", "immunity"]
+    },
+    { 
+      name: "Fennel", 
+      scientificName: "Foeniculum vulgare",
+      category: ["digestion", "culinary"]
+    },
+    { 
+      name: "Ginger", 
+      scientificName: "Zingiber officinale",
+      category: ["immunity", "digestion"]
+    },
+    { 
+      name: "Hibiscus", 
+      scientificName: "Hibiscus rosa-sinensis",
+      category: ["heart", "skin"]
+    },
+    { 
+      name: "Tulsi", 
+      scientificName: "Ocimum sanctum",
+      category: ["respiratory", "stress"]
+    },
+    { 
+      name: "Turmeric", 
+      scientificName: "Curcuma longa",
+      category: ["inflammation", "immunity"]
+    }
+  ];
+
   useEffect(() => {
     setIsVisible(true);
 
     // Auto slide for featured plants
-    const interval = setInterval(() => {
+    const featuredInterval = setInterval(() => {
       setCurrentPlantIndex((prevIndex) =>
         prevIndex === featuredPlants.length - 3 ? 0 : prevIndex + 1
       );
     }, 5000);
 
-    return () => clearInterval(interval);
+    // Auto slide for medicinal plants - every 2 seconds
+    const medicinalPlantsInterval = setInterval(() => {
+      setCurrentMedicinalPlantIndex((prevIndex) =>
+        prevIndex === medicinalPlants.length - 4 ? 0 : prevIndex + 1
+      );
+    }, 2000);
+
+    return () => {
+      clearInterval(featuredInterval);
+      clearInterval(medicinalPlantsInterval);
+    };
   }, []);
 
   const nextPlant = () => {
@@ -46,51 +100,143 @@ function Home() {
     );
   };
 
+  const nextMedicinalPlant = () => {
+    setCurrentMedicinalPlantIndex((prevIndex) =>
+      prevIndex === medicinalPlants.length - 4 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevMedicinalPlant = () => {
+    setCurrentMedicinalPlantIndex((prevIndex) =>
+      prevIndex === 0 ? medicinalPlants.length - 4 : prevIndex - 1
+    );
+  };
+
   // Framer motion variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
-  return (
-    <div className="font-sans bg-gradient-to-b from-green-50 to-white fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 ">
+  const formatPlantData = () => {
+    // List of all plants that should be displayed
+    const allPlants = [
+      "aloevera", "ashwagandha", "fennel(saunf)", "ginger", 
+      "hibiscus", "tulsi", "turmeric"
+    ];
+    
+    // Use the existing plantData if it matches your requirements,
+    // or create data for the plants that need to be displayed
+    return allPlants.map(plantName => {
+      // Find if the plant exists in the original data
+      const existingPlant = plantData.find(p => 
+        p.name.toLowerCase() === plantName.toLowerCase() ||
+        p.name.toLowerCase().includes(plantName.toLowerCase())
+      );
+      
+      if (existingPlant) {
+        return {
+          ...existingPlant,
+          id: existingPlant.name.toLowerCase().replace(/\s+/g, '_'),
+          image: `/images/${existingPlant.name.toLowerCase().replace(/\s+/g, '_')}.jpg`,
+          category: getCategoriesForPlant(plantName),
+          scientificName: existingPlant.scientificName || getScientificName(plantName)
+        };
+      }
+      
+      // If the plant doesn't exist in original data, create a basic entry
+      return {
+        id: plantName.toLowerCase().replace(/\s+/g, '_'),
+        name: plantName.charAt(0).toUpperCase() + plantName.slice(1),
+        scientificName: getScientificName(plantName),
+        description: "A medicinal plant with various health benefits.",
+        image: `/images/${plantName.toLowerCase().replace(/\s+/g, '_')}.jpg`,
+        careInstructions: "Water regularly and place in partial sunlight.",
+        category: getCategoriesForPlant(plantName)
+      };
+    });
+  };
 
+  // Helper function to assign scientific names to plants
+  const getScientificName = (plantName) => {
+    const scientificNames = {
+      "aloevera": "Aloe barbadensis miller",
+      "ashwagandha": "Withania somnifera",
+      "fennel(saunf)": "Foeniculum vulgare",
+      "ginger": "Zingiber officinale",
+      "hibiscus": "Hibiscus rosa-sinensis",
+      "tulsi": "Ocimum sanctum",
+      "turmeric": "Curcuma longa"
+    };
+    
+    return scientificNames[plantName.toLowerCase()] || "Scientific name unavailable";
+  };
+
+  // Helper function (you'll need to define this or remove the references)
+  const getCategoriesForPlant = (plantName) => {
+    const categories = {
+      "aloevera": ["skin", "healing"],
+      "ashwagandha": ["stress", "immunity"],
+      "fennel(saunf)": ["digestion", "culinary"],
+      "ginger": ["immunity", "digestion"],
+      "hibiscus": ["heart", "skin"],
+      "tulsi": ["respiratory", "stress"],
+      "turmeric": ["inflammation", "immunity"]
+    };
+    
+    return categories[plantName.toLowerCase()] || ["medicinal"];
+  };
+
+  return (
+    <div className="bg-gradient-to-b from-[#FFFAF7] to-[#DCFCE7] fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4">
 
 
       {/* Hero Section */}
-      <section className="flex items-center justify-between bg-gradient-to-r from-emerald-50 to-green-100 p-10 pt-24 mt-10 relative overflow-hidden">
+      <section className="flex items-center justify-between p-20 pt-24 mt-10 relative overflow-hidden">
+        {/* Background image container - positioned absolutely */}
+        <div className="absolute left-0 top-0 h-full w-[65%] z-0 overflow-hidden">
+          <img 
+            src={heroBackground}
+            alt="Background"
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+        
+        {/* Center Content - Heading, text and button */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-1/2 text-left z-10"
+          className="w-[80%] ml-[21%] z-10 text-center"
         >
-          <h1 className="text-5xl font-extrabold text-emerald-700 leading-tight">
+          <h1 className="text-6xl font-extrabold text-emerald-800 leading-tight">
             Welcome to <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-green-500">
               Virtual Herbal Garden
             </span>
           </h1>
-          <p className="text-gray-600 mt-4 text-lg max-w-md">
+          <p className="text-black mt-4 text-lg mx-auto">
             Explore the World of Medicinal Plants and Unlock Traditional Healing Secrets from Nature's Pharmacy.
           </p>
+          
           <motion.button
-            className="mt-6 bg-gradient-to-r from-emerald-600 to-green-500 text-white px-8 py-3 rounded-full flex items-center shadow-lg hover:shadow-xl transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Exploring <span className="ml-2">→</span>
-          </motion.button>
-        </motion.div>
-
+      className="mt-6 bg-gradient-to-r border-2 from-emerald-600 to-green-500 text-white px-8 py-3 rounded-full flex items-center mx-auto shadow-lg hover:shadow-xl transition-all duration-300" 
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => navigate("/Herbcatalog")}
+    >
+      Start Exploring <span className="ml-2">→</span>
+    </motion.button>
+    </motion.div>
+        {/* Right Image */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-1/2 flex justify-center relative"
+          className="w-[40%] h-full flex justify-end relative"
         >
           <motion.div
-            className="absolute w-72 h-72 rounded-full bg-emerald-300 opacity-20 blur-3xl"
+            className="absolute w-72 h-72 rounded-full"
             animate={{
               scale: [1, 1.2, 1],
               rotate: [0, 10, 0],
@@ -104,14 +250,14 @@ function Home() {
           <motion.img
             src={plantImage}
             alt="Herbal Plant"
-            className="w-3/4 rounded-lg shadow-xl relative z-10 bg-[#a8ffc8]"
+            className="w-[100%] h-full rounded-lg relative z-10"
             whileHover={{ scale: 1.07 }}
             transition={{ duration: 0.5 }}
           />
         </motion.div>
       </section>
 
-      {/* Featured Plants Section */}
+      {/* Plants Collection Section - Added below Hero Section */}
       <motion.section
         variants={fadeIn}
         initial="hidden"
@@ -120,14 +266,16 @@ function Home() {
         className="text-center mt-16 px-4"
       >
         <h2 className="text-4xl font-extrabold text-emerald-700 relative inline-block">
-          Explore Our Featured Plants
+          Medicinal Plants Collection
           <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-green-300"></span>
         </h2>
-        <p className="text-gray-600 text-lg mt-4">Discover Popular Medicinal Plants and Their Benefits</p>
+        <p className="text-gray-600 text-lg mt-4">Discover Nature's Healing Wonders</p>
 
-        <div className="flex justify-center items-center space-x-4 mt-10 relative">
+        {/* Plant Slider with Navigation */}
+        <div className="flex justify-center items-center space-x-4 mt-10 relative max-w-6xl mx-auto">
+          {/* Left Arrow */}
           <motion.button
-            onClick={prevPlant}
+            onClick={prevMedicinalPlant}
             className="text-emerald-700 bg-white p-2 rounded-full shadow-md z-10"
             whileHover={{ scale: 1.1, backgroundColor: "#e6fffa" }}
             whileTap={{ scale: 0.9 }}
@@ -137,44 +285,29 @@ function Home() {
             </svg>
           </motion.button>
 
-          <div className="flex space-x-6 overflow-hidden w-full max-w-3xl">
+          {/* Plants Slider Container */}
+          <div className="flex space-x-6 overflow-hidden w-full">
             <motion.div
-              className="flex space-x-6"
-              animate={{ x: -currentPlantIndex * 230 }}
+              className="flex space-x-12"
+              animate={{ x: -currentMedicinalPlantIndex * 260 }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              {featuredPlants.map((plant, index) => (
+              {medicinalPlants.map((plant, index) => (
                 <motion.div
                   key={index}
-                  className="relative bg-white p-6 rounded-xl shadow-lg w-52 flex-shrink-0"
-                  whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+                  className="flex-shrink-0"
+                  whileHover={{ y: -10, scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
-                  <div className="relative overflow-hidden rounded-lg mb-4 h-48">
-                    <img
-                      src={plant.img}
-                      alt={plant.name}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
-                      <p className="text-white p-3 font-medium">{plant.benefits}</p>
-                    </div>
-                  </div>
-                  <h3 className="text-emerald-700 font-bold text-lg mb-1">{plant.name}</h3>
-                  <motion.button
-                    className="mt-2 bg-emerald-600 text-white text-xs px-4 py-1.5 rounded-full shadow-md hover:bg-emerald-700 transition-colors duration-300"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    VIEW 3D MODEL
-                  </motion.button>
+                  <HerbCard herb={plant} />
                 </motion.div>
               ))}
             </motion.div>
           </div>
 
+          {/* Right Arrow */}
           <motion.button
-            onClick={nextPlant}
+            onClick={nextMedicinalPlant}
             className="text-emerald-700 bg-white p-2 rounded-full shadow-md z-10"
             whileHover={{ scale: 1.1, backgroundColor: "#e6fffa" }}
             whileTap={{ scale: 0.9 }}
@@ -187,16 +320,28 @@ function Home() {
 
         {/* Dots for navigation */}
         <div className="flex justify-center mt-6 space-x-2">
-          {Array.from({ length: featuredPlants.length - 2 }).map((_, index) => (
+          {Array.from({ length: medicinalPlants.length - 3 }).map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentPlantIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${currentPlantIndex === index ? "bg-emerald-600 w-6" : "bg-emerald-200"
-                }`}
+              onClick={() => setCurrentMedicinalPlantIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                currentMedicinalPlantIndex === index ? "bg-emerald-600 w-6" : "bg-emerald-200"
+              }`}
             />
           ))}
         </div>
+
+        {/* View all plants button */}
+        <motion.button
+          className="mt-10 bg-gradient-to-r from-emerald-600 to-green-500 text-white px-8 py-3 rounded-full flex items-center mx-auto shadow-lg hover:shadow-xl transition-all duration-300"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          View All Plants <span className="ml-2">→</span>
+        </motion.button>
       </motion.section>
+
+      <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#7EA172] to-transparent my-8 max-w-6xl mx-auto"></div>
 
       {/* Why Medicinal Plants Section */}
       <section className="text-center mt-10">
