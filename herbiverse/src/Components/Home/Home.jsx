@@ -55,7 +55,7 @@ function Home() {
   return (
     <div className="font-sans bg-gradient-to-b from-green-50 to-white fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4 ">
 
-  
+
 
       {/* Hero Section */}
       <section className="flex items-center justify-between bg-gradient-to-r from-emerald-50 to-green-100 p-10 pt-24 mt-10 relative overflow-hidden">
@@ -198,7 +198,7 @@ function Home() {
         </div>
       </motion.section>
 
-     {/* Why Medicinal Plants Section */}
+      {/* Why Medicinal Plants Section */}
       <section className="text-center mt-10">
         <h2 className="text-4xl font-extrabold text-green-700">Why Medicinal Plants?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 px-4">
