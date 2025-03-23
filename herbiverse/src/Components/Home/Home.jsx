@@ -18,7 +18,6 @@ function Home() {
   const [currentMedicinalPlantIndex, setCurrentMedicinalPlantIndex] = useState(0);
   const navigate = useNavigate();
 
-
   const featuredPlants = [
     { img: pot, name: "Lavender", benefits: "Relaxation, Sleep" },
     { img: box, name: "Aloe Vera", benefits: "Skin Care, Healing" },
@@ -206,7 +205,7 @@ function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 2 }}
           className="w-[80%] ml-[21%] z-10 text-center"
         >
           <h1 className="text-6xl font-extrabold text-emerald-800 leading-tight">
@@ -232,7 +231,7 @@ function Home() {
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 2, delay: 1 }}
           className="w-[40%] h-full flex justify-end relative"
         >
           <motion.div

@@ -477,10 +477,10 @@ function Herbcatalog() {
   // 🏗️ Function to format plant data
   const formatPlantData = () => {
     const allPlants = [
-      "aloe vera", "amla", "ashwagandha", "cactus", "ceropegia mahabalei",
-      "fennel(saunf)", "ficus ginseng", "geranium flower", "giloy", "ginger",
-      "hibiscus", "iphigenia stellata", "kalmegh", "mimosa", "neem",
-      "palm tree", "red poppy", "shatavari", "thalictrum dalzellii", "tulsi", "turmeric"
+      "aloevera", "amla", "ashwagandha", "cactus", "ceropegiamahabalei",
+      "fennel(saunf)", "ficusginseng", "geraniumflower", "giloy", "ginger",
+      "hibiscus", "iphigeniastellata", "kalmegh", "mimosa", "neem",
+      "palmtree", "redpoppy", "shatavari", "thalictrumdalzellii", "tulsi", "turmeric"
     ];
 
     return allPlants.map(plantName => {
