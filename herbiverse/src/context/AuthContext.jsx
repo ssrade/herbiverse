@@ -37,6 +37,22 @@ export const AuthProvider = ({ children }) => {
     }
   );
 
+  // Function to fetch user profile
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return null;
+      }
+      
+      const response = await axios.get('/users/profile');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Check if user is authenticated when the app loads
     const checkAuthStatus = async () => {
@@ -45,19 +61,36 @@ export const AuthProvider = ({ children }) => {
       
       if (token) {
         try {
-          // Updated endpoint to match your backend structure
-          const response = await axios.get('/api/users/verify');
+          // Fetch user profile directly instead of verifying
+          const userData = await fetchUserProfile();
           
-          // Make sure we're correctly handling the response
-          if (response.data && response.data.user) {
-            setUser(response.data.user);
+          if (userData) {
+            setUser(userData);
+            // Also update localStorage backup
+            localStorage.setItem('userData', JSON.stringify(userData));
             setIsAuthenticated(true);
           } else {
-            // If response structure is different, try to adapt
-            console.warn('Auth verification response structure unexpected:', response.data);
-            // Check if user data might be directly in the response
-            setUser(response.data || {});
-            setIsAuthenticated(true);
+            // If we can't get the profile, try to fall back to stored data
+            const storedUserData = localStorage.getItem('userData');
+            if (storedUserData) {
+              try {
+                const parsedUserData = JSON.parse(storedUserData);
+                setUser(parsedUserData);
+                setIsAuthenticated(true);
+                console.log("Retrieved user data from localStorage:", parsedUserData);
+              } catch (e) {
+                console.error('Error parsing stored user data', e);
+                setIsAuthenticated(false);
+                setUser(null);
+                localStorage.removeItem('userData');
+                localStorage.removeItem('token');
+              }
+            } else {
+              // No stored data, logout
+              setIsAuthenticated(false);
+              setUser(null);
+              localStorage.removeItem('token');
+            }
           }
         } catch (error) {
           console.error('Auth verification error:', error);
@@ -68,6 +101,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('token');
             setIsAuthenticated(false);
             setUser(null);
+            localStorage.removeItem('userData');
           } else {
             // For other errors (like network issues), keep user logged in
             // Just assume token is valid if server is unreachable
@@ -76,7 +110,9 @@ export const AuthProvider = ({ children }) => {
             try {
               const userData = localStorage.getItem('userData');
               if (userData) {
-                setUser(JSON.parse(userData));
+                const parsedUserData = JSON.parse(userData);
+                setUser(parsedUserData);
+                console.log("Retrieved user data from localStorage:", parsedUserData);
               }
             } catch (e) {
               console.error('Error parsing stored user data', e);
@@ -86,6 +122,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem('userData');
       }
       
       setLoading(false);
@@ -100,12 +137,33 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        // Also store user data in localStorage for backup
-        if (response.data.user) {
-          localStorage.setItem('userData', JSON.stringify(response.data.user));
+        
+        // After successful login, fetch the full profile
+        const profileData = await fetchUserProfile();
+        let userData;
+        
+        if (profileData) {
+          userData = profileData;
+        } else {
+          // Create a proper user object from login response if profile fetch fails
+          userData = response.data;
+          
+          // If user data is missing or incomplete, add email at minimum
+          if (!userData || Object.keys(userData).length === 0) {
+            userData = { email: email };
+          }
+          
+          // Make sure email is included
+          if (!userData.email) {
+            userData.email = email;
+          }
         }
-        setUser(response.data.user);
+        
+        // Store enhanced user data
+        localStorage.setItem('userData', JSON.stringify(userData));
+        setUser(userData);
         setIsAuthenticated(true);
+        console.log("User logged in with data:", userData);
         return { success: true };
       }
       return { success: false, message: 'Login failed' };
@@ -124,12 +182,35 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        // Also store user data in localStorage for backup
-        if (response.data.user) {
-          localStorage.setItem('userData', JSON.stringify(response.data.user));
+        
+        // After successful signup, fetch the full profile
+        const profileData = await fetchUserProfile();
+        let userData;
+        
+        if (profileData) {
+          userData = profileData;
+        } else {
+          // Create a proper user object from signup response if profile fetch fails
+          userData = response.data;
+          
+          // If user data is missing or incomplete, construct minimum info
+          if (!userData || Object.keys(userData).length === 0) {
+            userData = { 
+              name: name,
+              email: email
+            };
+          }
+          
+          // Make sure name and email are included
+          if (!userData.name) userData.name = name;
+          if (!userData.email) userData.email = email;
         }
-        setUser(response.data.user);
+        
+        // Store enhanced user data
+        localStorage.setItem('userData', JSON.stringify(userData));
+        setUser(userData);
         setIsAuthenticated(true);
+        console.log("User signed up with data:", userData);
         return { success: true };
       }
       return { success: false, message: 'Signup failed' };
@@ -142,11 +223,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userData');
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      // Call the logout endpoint if you want to invalidate the token on server
+      if (isAuthenticated) {
+        await axios.post('/users/logout');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Always clear local storage and state regardless of server response
+      localStorage.removeItem('token');
+      localStorage.removeItem('userData');
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
+  const refreshUserProfile = async () => {
+    if (isAuthenticated) {
+      try {
+        const userData = await fetchUserProfile();
+        if (userData) {
+          setUser(userData);
+          localStorage.setItem('userData', JSON.stringify(userData));
+          return true;
+        }
+      } catch (error) {
+        console.error('Error refreshing user profile:', error);
+      }
+    }
+    return false;
   };
 
   const addToFavorites = async (plant) => {
@@ -184,6 +291,7 @@ export const AuthProvider = ({ children }) => {
       login, 
       signup, 
       logout,
+      refreshUserProfile,
       addToFavorites
     }}>
       {children}

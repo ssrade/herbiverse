@@ -1,12 +1,38 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect , useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext"; // Update path as needed
+import { 
+  UserAvatar, 
+  getUserName, 
+  UserMenuDropdown, 
+  ProfilePopup,
+  MobileUserSection
+} from "./ProfileComponents";
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useContext(AuthContext);
+  const [profilePopupOpen, setProfilePopupOpen] = useState(false);
+  const { isAuthenticated, user, logout, refreshUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // For debugging - log the user object
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log("Header component - Current user data:", user);
+    }
+  }, [isAuthenticated, user]);
+
+  // Refresh user profile when component mounts if authenticated
+  const hasRefreshed = useRef(false);
+
+useEffect(() => {
+  if (isAuthenticated && !hasRefreshed.current) {
+    refreshUserProfile();
+    hasRefreshed.current = true; // Prevents further unnecessary calls
+  }
+}, [isAuthenticated]);
+
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -16,17 +42,41 @@ function Header() {
     setUserMenuOpen(!userMenuOpen);
   };
 
+  const toggleProfilePopup = async () => {
+    // Refresh profile before showing popup
+    if (isAuthenticated && !profilePopupOpen) {
+      await refreshUserProfile();
+    }
+    
+    setProfilePopupOpen(!profilePopupOpen);
+    // Close user menu if it's open
+    if (userMenuOpen) {
+      setUserMenuOpen(false);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  // Close user menu when clicking outside
+  // Close user menu and profile popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       const userMenu = document.getElementById('user-menu-container');
+      const profilePopup = document.getElementById('profile-popup-container');
+      const mobileProfilePopup = document.getElementById('profile-popup-container-mobile');
+      
       if (userMenu && !userMenu.contains(event.target) && userMenuOpen) {
         setUserMenuOpen(false);
+      }
+      
+      if (
+        ((profilePopup && !profilePopup.contains(event.target)) || 
+        (mobileProfilePopup && !mobileProfilePopup.contains(event.target))) && 
+        profilePopupOpen
+      ) {
+        setProfilePopupOpen(false);
       }
     };
 
@@ -34,7 +84,25 @@ function Header() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [userMenuOpen]);
+  }, [userMenuOpen, profilePopupOpen]);
+
+  // Attempt to get user data from localStorage if not available in context
+  const getEffectiveUser = () => {
+    if (user && Object.keys(user).length > 0) return user;
+    
+    try {
+      const storedUserData = localStorage.getItem('userData');
+      if (storedUserData) {
+        return JSON.parse(storedUserData);
+      }
+    } catch (e) {
+      console.error('Error retrieving user data from localStorage', e);
+    }
+    
+    return null;
+  };
+  
+  const effectiveUser = getEffectiveUser();
 
   return (
     <nav className="fixed top-0 left-0 w-full flex flex-col bg-[#F9FAF5] text-[#136b32] font-merriwether shadow-md z-50">
@@ -63,8 +131,10 @@ function Header() {
                 onClick={toggleUserMenu} 
                 className="flex items-center space-x-2 bg-green-100 hover:bg-green-200 px-4 py-2 rounded-md"
               >
+                {/* User Avatar */}
+                <UserAvatar user={effectiveUser} size="sm" />
                 <span className="font-medium">
-                  {user?.name || user?.username || user?.email?.split('@')[0] || 'User'}
+                  {getUserName(effectiveUser)}
                 </span>
                 <svg 
                   className={`h-4 w-4 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} 
@@ -78,31 +148,21 @@ function Header() {
               
               {/* User Dropdown Menu */}
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <NavLink 
-                    to="/profile" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    Profile
-                  </NavLink>
-                  <NavLink 
-                    to="/favourite" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    My Favorites
-                  </NavLink>
-                  <button 
-                    onClick={() => {
-                      handleLogout();
-                      setUserMenuOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
-                </div>
+                <UserMenuDropdown 
+                  user={effectiveUser}
+                  toggleProfilePopup={toggleProfilePopup}
+                  setUserMenuOpen={setUserMenuOpen}
+                  handleLogout={handleLogout}
+                />
+              )}
+              
+              {/* User Profile Popup */}
+              {profilePopupOpen && (
+                <ProfilePopup 
+                  user={effectiveUser}
+                  handleLogout={handleLogout}
+                  setProfilePopupOpen={setProfilePopupOpen}
+                />
               )}
             </div>
           ) : (
@@ -130,11 +190,10 @@ function Header() {
         <div className="md:hidden bg-[#FFFAF7] border-t w-full">
           <div className="flex flex-col px-4 py-4 space-y-4 text-lg font-semibold">
             {isAuthenticated && (
-              <div className="bg-green-100 p-3 rounded-md mb-2">
-                <p className="font-bold text-green-800">
-                  Welcome, {user?.name || user?.username || user?.email?.split('@')[0] || 'User'}!
-                </p>
-              </div>
+              <MobileUserSection 
+                user={effectiveUser}
+                toggleProfilePopup={toggleProfilePopup}
+              />
             )}
             
             <NavLink to="/" className="hover:text-gray-500" onClick={toggleMobileMenu}>HOME</NavLink>
@@ -142,10 +201,7 @@ function Header() {
             <NavLink to="/virtual-tour" className="hover:text-gray-500" onClick={toggleMobileMenu}>VIRTUAL TOUR</NavLink>
             
             {isAuthenticated && (
-              <>
-                <NavLink to="/favourite" className="hover:text-gray-500" onClick={toggleMobileMenu}>FAVOURITES</NavLink>
-                <NavLink to="/profile" className="hover:text-gray-500" onClick={toggleMobileMenu}>PROFILE</NavLink>
-              </>
+              <NavLink to="/favourite" className="hover:text-gray-500" onClick={toggleMobileMenu}>FAVOURITES</NavLink>
             )}
             
             <NavLink to="/about-us" className="hover:text-gray-500" onClick={toggleMobileMenu}>ABOUT US</NavLink>
@@ -178,6 +234,17 @@ function Header() {
             )}
           </div>
         </div>
+      )}
+      
+      {/* Mobile User Profile Popup */}
+      {profilePopupOpen && (
+        <ProfilePopup 
+          user={effectiveUser}
+          isMobile={true}
+          handleLogout={handleLogout}
+          setProfilePopupOpen={setProfilePopupOpen}
+          toggleMobileMenu={toggleMobileMenu}
+        />
       )}
     </nav>
   );

@@ -477,8 +477,8 @@ function Herbcatalog() {
   // 🏗️ Function to format plant data
   const formatPlantData = () => {
     const allPlants = [
-      "aloevera", "amla", "ashwagandha", "cactus", "ceropegiamahabalei",
-      "fennel(saunf)", "ficusginseng", "geraniumflower", "giloy", "ginger",
+      "aloe vera", "amla", "ashwagandha", "cactus", "ceropegia mahabalei",
+      "fennel(saunf)", "ficusginseng", "geranium flower", "giloy", "ginger",
       "hibiscus", "iphigeniastellata", "kalmegh", "mimosa", "neem",
       "palmtree", "redpoppy", "shatavari", "thalictrumdalzellii", "tulsi", "turmeric"
     ];
@@ -504,10 +504,10 @@ function Herbcatalog() {
   // 🌱 Function to get scientific names
   const getScientificName = (plantName) => {
     const scientificNames = {
-      "aloevera": "Aloe barbadensis miller", "amla": "Phyllanthus emblica",
+      "aloe vera": "Aloe barbadensis miller", "amla": "Phyllanthus emblica",
       "ashwagandha": "Withania somnifera", "cactus": "Cactaceae spp.",
       "ceropegiamahabalei": "Ceropegia mahabalei", "fennel(saunf)": "Foeniculum vulgare",
-      "ficusginseng": "Ficus microcarpa", "geraniumflower": "Pelargonium graveolens",
+      "ficusginseng": "Ficus microcarpa", "geranium flower": "Pelargonium graveolens",
       "giloy": "Tinospora cordifolia", "ginger": "Zingiber officinale",
       "hibiscus": "Hibiscus rosa-sinensis", "iphigeniastellata": "Iphigenia stellata",
       "kalmegh": "Andrographis paniculata", "mimose": "Mimosa pudica", "neem": "Azadirachta indica",
