@@ -74,13 +74,17 @@ function Home() {
       );
     }, 5000);
 
-    // Auto slide for medicinal plants - every 2 seconds
+    // Modified auto slide for medicinal plants with smooth infinite scrolling
     const medicinalPlantsInterval = setInterval(() => {
-      setCurrentMedicinalPlantIndex((prevIndex) =>
-        prevIndex === medicinalPlants.length - 4 ? 0 : prevIndex + 1
-      );
+      setCurrentMedicinalPlantIndex((prevIndex) => {
+        // When we reach the last plant, we'll prepare to loop back
+        if (prevIndex >= medicinalPlants.length - 1) {
+          return 0;
+        }
+        return prevIndex + 1;
+      });
     }, 2000);
-
+    
     return () => {
       clearInterval(featuredInterval);
       clearInterval(medicinalPlantsInterval);
@@ -100,17 +104,15 @@ function Home() {
   };
 
   const nextMedicinalPlant = () => {
-    setCurrentMedicinalPlantIndex((prevIndex) =>
-      prevIndex === medicinalPlants.length - 4 ? 0 : prevIndex + 1
-    );
+    setCurrentMedicinalPlantIndex((prevIndex) => (prevIndex + 1) % medicinalPlants.length);
   };
-
+  
   const prevMedicinalPlant = () => {
     setCurrentMedicinalPlantIndex((prevIndex) =>
-      prevIndex === 0 ? medicinalPlants.length - 4 : prevIndex - 1
+      prevIndex === 0 ? medicinalPlants.length - 1 : prevIndex - 1
     );
   };
-
+  
   // Framer motion variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -288,12 +290,24 @@ function Home() {
           <div className="flex space-x-6 overflow-hidden w-full">
             <motion.div
               className="flex space-x-12"
-              animate={{ x: -currentMedicinalPlantIndex * 260 }}
-              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+              animate={{ 
+                x: -currentMedicinalPlantIndex * 260,
+                transition: { 
+                  type: "spring", 
+                  stiffness: 120, 
+                  damping: 20,
+                  // Make transition smooth when looping back
+                  ...(currentMedicinalPlantIndex === 0 && {
+                    type: "tween",
+                    duration: 0.5
+                  })
+                }
+              }}
             >
-              {medicinalPlants.map((plant, index) => (
+              {/* Duplicate the first few items at the end for seamless looping */}
+              {[...medicinalPlants, ...medicinalPlants.slice(0, 3)].map((plant, index) => (
                 <motion.div
-                  key={index}
+                  key={`plant-${index}`}
                   className="flex-shrink-0"
                   whileHover={{ y: -10, scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -319,7 +333,7 @@ function Home() {
 
         {/* Dots for navigation */}
         <div className="flex justify-center mt-6 space-x-2">
-          {Array.from({ length: medicinalPlants.length - 3 }).map((_, index) => (
+          {medicinalPlants.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentMedicinalPlantIndex(index)}
@@ -335,6 +349,7 @@ function Home() {
           className="mt-10 bg-gradient-to-r from-emerald-600 to-green-500 text-white px-8 py-3 rounded-full flex items-center mx-auto shadow-lg hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/Herbcatalog")}
         >
           View All Plants <span className="ml-2">→</span>
         </motion.button>

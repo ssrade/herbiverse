@@ -1,6 +1,7 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import HerbModel from './Herbmodel';
+import { Star, X, Edit2, Trash2, Save, X as Cancel, Info, BookOpen, Leaf } from 'lucide-react';
 
 import { 
   isUserLoggedIn, 
@@ -48,6 +49,9 @@ const ModelViewer = () => {
   const [isLoadingNotes, setIsLoadingNotes] = useState(false);
   const [noteError, setNoteError] = useState(null);
   const [noteSuccess, setNoteSuccess] = useState(null);
+  const [showNotesPanel, setShowNotesPanel] = useState(false);
+  const [showDescPanel, setShowDescPanel] = useState(true);
+  const [activePanelType, setActivePanelType] = useState('description');
 
   // First useEffect: Get plant ID for any view type
   useEffect(() => {
@@ -133,7 +137,7 @@ const ModelViewer = () => {
       // If the plant was already a favorite
       if (result.alreadyFavorite) {
         setIsFavorite(true);
-        setSuccessMessage(result.message);
+        setSuccessMessage(result.message || "Already in favorites");
       } else {
         setIsFavorite(true);
         setSuccessMessage("Added to Favorites");
@@ -303,242 +307,345 @@ const ModelViewer = () => {
     setViewType(type);
   };
 
+  // Set active panel type
+  const setActivePanel = (panelType) => {
+    setActivePanelType(panelType);
+    if (panelType === 'notes') {
+      setShowNotesPanel(true);
+      setShowDescPanel(false);
+    } else {
+      setShowNotesPanel(false);
+      setShowDescPanel(true);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-85 z-50 flex items-center justify-center p-6">
-      <div className="bg-gray-800 bg-opacity-90 rounded-2xl w-full max-w-8xl h-full flex flex-col shadow-2xl overflow-hidden">
-        {/* View Type Tabs and Close Button */}
-        <div className="flex items-center justify-between px-6 py-3 border-b border-gray-600">
-          <div className="flex gap-4">
+    <div className="fixed inset-0 flex items-center justify-center p-6 z-50">
+      {/* Semi-transparent background overlay */}
+      <div className="absolute inset-0 bg-black/70 z-0"></div>
+      
+      <div className="relative w-full max-w-[95vw] h-[95vh] flex flex-col z-10 overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-b from-gray-900 to-black border border-green-500/30">
+        {/* Top navigation bar with glass effect */}
+        <div className="flex justify-between items-center p-4 backdrop-blur-lg bg-black/60 border-b border-green-500/30">
+          <div className="flex items-center space-x-4">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-green-300 to-emerald-400 bg-clip-text text-transparent">
+              {herb.name || "Unknown Herb"}
+            </h2>
+            
+            {/* Favorite Status Badge */}
+            {isCheckingFavorite ? (
+              <div className="animate-pulse h-8 w-24 rounded-full bg-gray-600"></div>
+            ) : (
+              <div className="flex items-center">
+                <button
+                  onClick={isFavorite ? handleRemoveFavorite : handleAddFavorite}
+                  disabled={isLoading}
+                  className={`flex items-center gap-1.5 py-1 px-3 rounded-full transition-all duration-300 ${
+                    isFavorite 
+                      ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 hover:from-amber-500 hover:to-yellow-600' 
+                      : 'bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white'
+                  }`}
+                  title={isFavorite ? "Remove from collection" : "Add to collection"}
+                >
+                  <Star 
+                    size={16} 
+                    className={isFavorite ? 'fill-gray-900' : ''} 
+                  />
+                  {isFavorite ? "In Favourites" : "Add to Collection"}
+                </button>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            {/* View Toggle */}
+            <div className="bg-gray-800/70 backdrop-blur rounded-full p-1 flex">
+              <button
+                className={`px-4 py-1.5 rounded-full transition-all duration-200 ${
+                  viewType === '3d' ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:text-white'
+                }`}
+                onClick={() => toggleViewType('3d')}
+              >
+                3D
+              </button>
+              <button
+                className={`px-4 py-1.5 rounded-full transition-all duration-200 ${
+                  viewType === '2d' ? 'bg-emerald-600 text-white' : 'text-gray-300 hover:text-white'
+                }`}
+                onClick={() => toggleViewType('2d')}
+              >
+                2D
+              </button>
+            </div>
+            
+            {/* Close Button */}
             <button
-              className={`px-4 py-2 rounded-t-lg ${viewType === '3d' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
-              onClick={() => toggleViewType('3d')}
+              className="p-2 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all duration-200"
+              onClick={handleClose}
             >
-              3D View
-            </button>
-            <button
-              className={`px-4 py-2 rounded-t-lg ${viewType === '2d' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
-              onClick={() => toggleViewType('2d')}
-            >
-              2D View
+              <X size={20} />
             </button>
           </div>
-          <button
-            className="text-gray-300 hover:text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2"
-            onClick={handleClose}
-          >
-            Close
-          </button>
         </div>
         
+        {/* Main content area */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left: 3D/2D Model */}
-          <div className="w-3/5 h-full flex items-center justify-center border-r border-gray-600">
-            {viewType === '3d' ? (
-              <Suspense fallback={<p className="text-center text-gray-400">Loading 3D Model...</p>}>
-                {modelPath ? <HerbModel modelPath={modelPath} is3D={true} /> : <p className="text-red-500">Model not found.</p>}
-              </Suspense>
-            ) : (
-              <div className="flex items-center justify-center h-full w-full">
-                <img 
-                  src={imagePath} 
-                  alt={herb.name} 
-                  className="max-h-full max-w-full object-contain"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/plants/placeholder.jpg";
-                  }}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Right: Herb Information */}
-          <div className="w-2/5 p-6 text-white overflow-y-auto">
-            <h3 className="text-3xl font-bold mb-4">{herb.name || "Unknown Herb"}</h3>
-            <p className="text-gray-300 mb-4"><strong>Scientific Name:</strong> {herb.scientificName || "Not available"}</p>
+          {/* Left: 3D/2D Model container */}
+          <div className="relative w-3/5 flex items-center justify-center overflow-hidden bg-gradient-to-b from-emerald-900/20 to-green-800/10">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-300/5 rounded-full blur-3xl"></div>
             
-            {/* Display description if available */}
-            {herb.description && (
-              <p className="text-gray-300 mb-4">{herb.description}</p>
-            )}
-
-            {/* Display care instructions if available */}
-            {herb.careInstructions && (
-              <div className="mb-4">
-                <h4 className="text-xl font-semibold mb-2">Care Instructions</h4>
-                <p className="text-gray-300">{herb.careInstructions}</p>
-              </div>
-            )}
-
-            {/* Debug Info */}
-            {/* <div className="bg-gray-700 p-2 rounded mb-4 text-xs">
-              <p>Plant ID: {plantId || "Loading..."}</p>
-              <p>View Type: {viewType}</p>
-              <p>Model Path: {viewType === '3d' ? modelPath : imagePath}</p>
-              <p>Favorite Status: {isCheckingFavorite ? "Checking..." : (isFavorite ? "In Favorites" : "Not in Favorites")}</p>
-              <p>User Logged In: {userLoggedIn ? "Yes" : "No"}</p>
-            </div> */}
-
-            {/* Success Message */}
-            {successMessage && (
-              <div className="bg-green-600 text-white p-2 rounded mb-4 text-center">
-                {successMessage}
-              </div>
-            )}
-
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-600 text-white p-2 rounded mb-4 text-center">
-                {error}
-              </div>
-            )}
-
-            {/* Favorite UI for both view types */}
-            <>
-              {/* Loading Indicator */}
-              {isCheckingFavorite && (
-                <div className="bg-blue-600 text-white p-2 rounded mb-4 text-center">
-                  Checking favorite status...
-                </div>
-              )}
-
-              {/* Favorite Buttons */}
-              {!isCheckingFavorite && (
-                <div className="flex flex-col gap-2 mt-4 mb-6">
-                  {isFavorite ? (
-                    <>
-                      <button 
-                        className="px-4 py-2 rounded-lg text-white bg-green-500 w-full" 
-                        disabled={true}
-                      >
-                        ✓ Added to Favorites
-                      </button>
-                      <button 
-                        className="px-4 py-2 rounded-lg text-white bg-red-600 w-full"
-                        onClick={handleRemoveFavorite}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? "Processing..." : "Remove from Favorites"}
-                      </button>
-                    </>
-                  ) : (
-                    <button 
-                      className="px-4 py-2 rounded-lg text-white bg-blue-600 w-full"
-                      onClick={handleAddFavorite}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Processing..." : "+ Add to Favorites"}
-                    </button>
-                  )}
-                </div>
-              )}
-            </>
-
-            {/* Notes Section */}
-            <div className="mt-6 border-t border-gray-600 pt-4">
-              <h4 className="text-xl font-semibold mb-3">Notes</h4>
-              
-              {/* Note Error Message */}
-              {noteError && (
-                <div className="bg-red-600 text-white p-2 rounded mb-4 text-center">
-                  {noteError}
-                </div>
-              )}
-              
-              {/* Note Success Message */}
-              {noteSuccess && (
-                <div className="bg-green-600 text-white p-2 rounded mb-4 text-center">
-                  {noteSuccess}
-                </div>
-              )}
-
-              {/* Add Note Form */}
-              {userLoggedIn ? (
-                <form onSubmit={handleAddNote} className="mb-4">
-                  <div className="flex flex-col gap-2">
-                    <textarea
-                      className="w-full px-3 py-2 rounded-lg bg-gray-700 text-white resize-none"
-                      rows="3"
-                      placeholder="Add a note about this plant..."
-                      value={newNote}
-                      onChange={(e) => setNewNote(e.target.value)}
-                      disabled={isLoadingNotes}
-                    ></textarea>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700"
-                      disabled={isLoadingNotes || !newNote.trim()}
-                    >
-                      {isLoadingNotes ? "Saving..." : "Add Note"}
-                    </button>
+            {/* Model showcase container with glass effect */}
+            <div className="relative w-full h-full flex items-center justify-center m-6 overflow-hidden">
+              {/* Model content */}
+              <div className="relative z-20 w-full h-full flex items-center justify-center">
+                {viewType === '3d' ? (
+                  <Suspense fallback={
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 border-4 border-t-emerald-500 border-emerald-200/30 rounded-full animate-spin"></div>
+                      <p className="text-emerald-300 mt-4">Loading 3D Model...</p>
+                    </div>
+                  }>
+                    {modelPath ? <HerbModel modelPath={modelPath} is3D={true} /> : <p className="text-red-500">Model not found.</p>}
+                  </Suspense>
+                ) : (
+                  <div className="flex items-center justify-center h-full w-full p-8">
+                    <div className="relative rounded-xl overflow-hidden shadow-2xl transition-all duration-300 transform hover:scale-105 group max-w-lg">
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <img 
+                        src={imagePath} 
+                        alt={herb.name} 
+                        className="max-h-full w-auto object-contain rounded-xl"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/plants/placeholder.jpg";
+                        }}
+                      />
+                      <div className="absolute bottom-0 left-0 w-full p-4 text-white z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 className="text-xl font-semibold">{herb.name}</h3>
+                        <p className="text-sm text-gray-200">{herb.scientificName}</p>
+                      </div>
+                    </div>
                   </div>
-                </form>
-              ) : (
-                <p className="text-yellow-400 mb-4">Please log in to add notes</p>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Right: Information Panel */}
+          <div className="w-2/5 flex flex-col bg-gradient-to-b from-green-900/30 to-emerald-800/10 backdrop-blur-sm border-l border-green-500/30">
+            {/* Panel Tab Navigation */}
+            <div className="flex border-b border-green-500/30">
+              <button 
+                className={`flex-1 py-3 px-4 flex items-center justify-center gap-2 transition-all duration-200 border-b-2 ${
+                  activePanelType === 'description' 
+                    ? 'border-green-400 text-green-400' 
+                    : 'border-transparent text-gray-400 hover:text-white'
+                }`}
+                onClick={() => setActivePanel('description')}
+              >
+                <Info size={18} />
+                Details
+              </button>
+              <button 
+                className={`flex-1 py-3 px-4 flex items-center justify-center gap-2 transition-all duration-200 border-b-2 ${
+                  activePanelType === 'notes' 
+                    ? 'border-blue-400 text-blue-400' 
+                    : 'border-transparent text-gray-400 hover:text-white'
+                }`}
+                onClick={() => setActivePanel('notes')}
+              >
+                <BookOpen size={18} />
+                My Notes {notes.length > 0 && `(${notes.length})`}
+              </button>
+            </div>
+            
+            {/* Panel Content */}
+            <div className="flex-1 overflow-auto">
+              {/* Description Panel */}
+              {showDescPanel && (
+                <div className="p-6 text-white">
+                  {/* Status Messages */}
+                  {successMessage && (
+                    <div className="mb-6 bg-green-600/80 text-white p-3 rounded-lg backdrop-blur-sm text-center">
+                      {successMessage}
+                    </div>
+                  )}
+                  
+                  {error && (
+                    <div className="mb-6 bg-red-600/80 text-white p-3 rounded-lg backdrop-blur-sm text-center">
+                      {error}
+                    </div>
+                  )}
+                  
+                  {/* Featured Image */}
+                  <div className="mb-6 bg-black/20 rounded-xl p-4 backdrop-blur-sm">
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-green-300 to-emerald-400 bg-clip-text text-transparent flex items-center gap-2 mb-3">
+                      <Leaf size={24} className="text-green-400" />
+                      Plant Information
+                    </h3>
+                    
+                    <div className="space-y-4">
+                      <div className="bg-white/5 rounded-lg p-4 border border-green-500/20">
+                        <h4 className="text-sm text-green-300 uppercase tracking-wider mb-1">Scientific Name</h4>
+                        <p className="text-gray-200 text-lg font-medium">{herb.scientificName || "Not available"}</p>
+                      </div>
+                      
+                      {herb.description && (
+                        <div className="bg-white/5 rounded-lg p-4 border border-green-500/20">
+                          <h4 className="text-sm text-green-300 uppercase tracking-wider mb-1">Description</h4>
+                          <p className="text-gray-200">{herb.description}</p>
+                        </div>
+                      )}
+                      
+                      {herb.careInstructions && (
+                        <div className="bg-white/5 rounded-lg p-4 border border-green-500/20">
+                          <h4 className="text-sm text-green-300 uppercase tracking-wider mb-1">Care Instructions</h4>
+                          <p className="text-gray-200">{herb.careInstructions}</p>
+                        </div>
+                      )}
+                      
+                      {herb.usages && (
+                        <div className="bg-white/5 rounded-lg p-4 border border-green-500/20">
+                          <h4 className="text-sm text-green-300 uppercase tracking-wider mb-1">Common Uses</h4>
+                          <p className="text-gray-200">{herb.usages}</p>
+                        </div>
+                      )}
+                      
+                      {herb.growingConditions && (
+                        <div className="bg-white/5 rounded-lg p-4 border border-green-500/20">
+                          <h4 className="text-sm text-green-300 uppercase tracking-wider mb-1">Growing Conditions</h4>
+                          <p className="text-gray-200">{herb.growingConditions}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
-
-              {/* Notes List */}
-              <div className="space-y-3">
-                {isLoadingNotes && notes.length === 0 && (
-                  <p className="text-gray-400 text-center py-2">Loading notes...</p>
-                )}
-                
-                {!isLoadingNotes && notes.length === 0 && (
-                  <p className="text-gray-400 text-center py-2">No notes yet</p>
-                )}
-                
-                {notes.map(note => (
-                  <div key={note._id} className="bg-gray-700 rounded-lg p-3">
-                    {editingNote === note._id ? (
-                      <div className="space-y-2">
+              
+              {/* Notes Panel */}
+              {showNotesPanel && (
+                <div className="p-6 text-white h-full flex flex-col">
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2 mb-4">
+                    <BookOpen size={24} className="text-blue-400" />
+                    My Notes
+                  </h3>
+                  
+                  {/* Note Status Messages */}
+                  {noteError && (
+                    <div className="mb-4 bg-red-600/80 text-white p-3 rounded-lg backdrop-blur-sm text-center">
+                      {noteError}
+                    </div>
+                  )}
+                  
+                  {noteSuccess && (
+                    <div className="mb-4 bg-green-600/80 text-white p-3 rounded-lg backdrop-blur-sm text-center">
+                      {noteSuccess}
+                    </div>
+                  )}
+                  
+                  {/* Add Note Form */}
+                  {userLoggedIn ? (
+                    <form onSubmit={handleAddNote} className="mb-6">
+                      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-blue-500/20">
                         <textarea
-                          className="w-full px-3 py-2 rounded-lg bg-gray-600 text-white resize-none"
+                          className="w-full px-3 py-2 rounded-lg bg-black/30 text-white border border-blue-500/30 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none resize-none transition-all duration-200"
                           rows="3"
-                          value={editedContent}
-                          onChange={(e) => setEditedContent(e.target.value)}
+                          placeholder="Add a note about this plant..."
+                          value={newNote}
+                          onChange={(e) => setNewNote(e.target.value)}
                           disabled={isLoadingNotes}
                         ></textarea>
-                        <div className="flex gap-2">
-                          <button
-                            className="px-3 py-1 text-sm rounded-lg bg-green-600 text-white hover:bg-green-700 flex-1"
-                            onClick={() => handleUpdateNote(note._id)}
-                            disabled={isLoadingNotes || !editedContent.trim()}
-                          >
-                            Save
-                          </button>
-                          <button
-                            className="px-3 py-1 text-sm rounded-lg bg-gray-500 text-white hover:bg-gray-600 flex-1"
-                            onClick={cancelEditingNote}
-                            disabled={isLoadingNotes}
-                          >
-                            Cancel
-                          </button>
-                        </div>
+                        <button
+                          type="submit"
+                          className="w-full mt-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center gap-2"
+                          disabled={isLoadingNotes || !newNote.trim()}
+                        >
+                          {isLoadingNotes ? "Saving..." : "Add Note"}
+                        </button>
                       </div>
-                    ) : (
-                      <>
-                        <p className="mb-2">{note.content}</p>
-                        <div className="flex justify-end gap-2 mt-2">
-                          <button
-                            className="px-2 py-1 text-xs rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                            onClick={() => startEditingNote(note)}
-                            disabled={isLoadingNotes}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="px-2 py-1 text-xs rounded-lg bg-red-600 text-white hover:bg-red-700"
-                            onClick={() => handleDeleteNote(note._id)}
-                            disabled={isLoadingNotes}
-                          >
-                            Delete
-                          </button>
+                    </form>
+                  ) : (
+                    <div className="mb-6 bg-yellow-600/40 backdrop-blur-sm text-yellow-200 p-4 rounded-lg flex items-center justify-center">
+                      <p>Please log in to add notes</p>
+                    </div>
+                  )}
+                  
+                  {/* Notes List */}
+                  <div className="flex-1 overflow-auto">
+                    <div className="space-y-3">
+                      {isLoadingNotes && notes.length === 0 && (
+                        <div className="flex justify-center py-6">
+                          <div className="w-8 h-8 border-2 border-t-blue-500 border-blue-200/30 rounded-full animate-spin"></div>
                         </div>
-                      </>
-                    )}
+                      )}
+                      
+                      {!isLoadingNotes && notes.length === 0 && (
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg py-8 text-center border border-dashed border-blue-500/20">
+                          <p className="text-gray-400">No notes yet. Add your first note above!</p>
+                        </div>
+                      )}
+                      
+                      {notes.map(note => (
+                        <div key={note._id} className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-blue-500/20 transition-all duration-200 hover:border-blue-400/30 group">
+                          {editingNote === note._id ? (
+                            <div className="space-y-3">
+                              <textarea
+                                className="w-full px-3 py-2 rounded-lg bg-black/30 text-white border border-blue-500/30 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none resize-none transition-all duration-200"
+                                rows="3"
+                                value={editedContent}
+                                onChange={(e) => setEditedContent(e.target.value)}
+                                disabled={isLoadingNotes}
+                              ></textarea>
+                              <div className="flex gap-2">
+                                <button
+                                  className="flex items-center justify-center gap-1 px-3 py-1.5 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 flex-1 transition-all duration-200"
+                                  onClick={() => handleUpdateNote(note._id)}
+                                  disabled={isLoadingNotes || !editedContent.trim()}
+                                >
+                                  <Save size={16} />
+                                  Save
+                                </button>
+                                <button
+                                  className="flex items-center justify-center gap-1 px-3 py-1.5 text-sm rounded-lg bg-gray-600 text-white hover:bg-gray-700 flex-1 transition-all duration-200"
+                                  onClick={cancelEditingNote}
+                                  disabled={isLoadingNotes}
+                                >
+                                  <Cancel size={16} />
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-gray-200">{note.content}</p>
+                              <div className="flex justify-end gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button
+                                  className="flex items-center justify-center gap-1 px-2 py-1 text-xs rounded-lg bg-blue-600/80 text-white hover:bg-blue-700 transition-all duration-200"
+                                  onClick={() => startEditingNote(note)}
+                                  disabled={isLoadingNotes}
+                                >
+                                  <Edit2 size={12} />
+                                  Edit
+                                </button>
+                                <button
+                                  className="flex items-center justify-center gap-1 px-2 py-1 text-xs rounded-lg bg-red-600/80 text-white hover:bg-red-700 transition-all duration-200"
+                                  onClick={() => handleDeleteNote(note._id)}
+                                  disabled={isLoadingNotes}
+                                >
+                                  <Trash2 size={12} />
+                                  Delete
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
