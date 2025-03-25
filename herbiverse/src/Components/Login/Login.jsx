@@ -44,8 +44,8 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen ">
-     <div className="bg-gradient-to-br from-[#FFFAF7] via-[#FFFAF7] to-green-100 p-10 border border-gray-200 rounded-2xl shadow-lg flex w-[900px] h-[500px] backdrop-blur-lg">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-[#FFFAF7] to-[#DCFCE7] fixed overflow-y-auto inset-0  text-center py-12 px-4">
+     <div className="bg-gradient-to-b from-[#FFFAF7] via-[#FFFAF7] to-green-100 p-10 border border-gray-200 rounded-2xl shadow-lg flex w-[900px] h-[500px] backdrop-blur-lg">
         {/* Left Side - Lottie Animation */}
         <div className="flex-1 flex justify-center items-center">
           <Lottie animationData={loginAnimation} loop={false} className="w-72 h-72" />
