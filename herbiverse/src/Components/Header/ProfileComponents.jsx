@@ -82,10 +82,10 @@ export const getUserEmail = (user) => {
 // Desktop user menu dropdown
 export const UserMenuDropdown = ({ user, toggleProfilePopup, setUserMenuOpen, handleLogout }) => {
   return (
-    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 flex flex-col justify-center items-center">
       <button 
         onClick={toggleProfilePopup}
-        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        className="block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
       >
         View Profile
       </button>
@@ -101,7 +101,7 @@ export const UserMenuDropdown = ({ user, toggleProfilePopup, setUserMenuOpen, ha
           handleLogout();
           setUserMenuOpen(false);
         }}
-        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+        className="block w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
       >
         Logout
       </button>
