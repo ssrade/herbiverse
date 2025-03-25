@@ -10,6 +10,7 @@ import ModelViewer from './Components/Herb/Modelviewer.jsx'
 import Login from './Components/Login/Login.jsx'
 import Signup from './Components/Signup/Signup.jsx'
 import Favourite from './Components/Favourite/Favourite.jsx'
+import Aboutus from './Components/AboutUs/Aboutus.jsx'
 import { AuthProvider } from "./context/AuthContext.jsx";  // Note: Use named import with curly braces
 
 const router = createBrowserRouter(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
       <Route path='/Login' element={<Login/>}></Route>
       <Route path='/Signup' element={<Signup/>}></Route>
       <Route path='/Favourite' element={<Favourite/>}></Route>
+      <Route path='/Aboutus' element={<Aboutus/>}></Route>
       <Route path="/herb/:herbId" element={<ModelViewer />}></Route>
     </Route>
   )

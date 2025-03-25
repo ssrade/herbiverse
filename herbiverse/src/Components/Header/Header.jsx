@@ -120,7 +120,7 @@ useEffect(() => {
           {isAuthenticated && (
             <NavLink to="/favourite" className="hover:text-gray-500">FAVOURITES</NavLink>
           )}
-          <NavLink to="/about-us" className="hover:text-gray-500">ABOUT US</NavLink>
+          <NavLink to="/aboutus" className="hover:text-gray-500">ABOUT US</NavLink>
         </div>
 
         {/* Auth/User Section - Desktop */}
