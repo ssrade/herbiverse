@@ -523,11 +523,11 @@ function Herbcatalog() {
     const name = plantName.toLowerCase();
 
     if (["amla", "fennel(saunf)", "ginger", "turmeric", "kalmegh"].includes(name)) categories.push("Digestive Health");
-    if (["aloevera", "neem", "geraniumflower", "hibiscus", "turmeric", "cactus"].includes(name)) categories.push("Skin Care & Beauty");
+    if (["aloe vera", "neem", "geranium flower", "hibiscus", "turmeric", "cactus"].includes(name)) categories.push("Skin Care & Beauty");
     if (["tulsi", "giloy", "ashwagandha", "amla", "turmeric", "neem", "kalmegh", "shatavari"].includes(name)) categories.push("Immunity Boosting Herbs");
     if (["tulsi", "kalmegh", "ginger", "thalictrumdalzellii", "iphigeniastellata"].includes(name)) categories.push("Respiratory Support");
     if (["ashwagandha", "tulsi", "hibiscus", "redpoppy", "shatavari", "mimosa"].includes(name)) categories.push("Stress & Anxiety");
-    if (["ceropegiamahabalei", "ficusginseng", "palmtree"].includes(name)) categories.push("Rare Botanical Treasure");
+    if (["ceropegia mahabalei", "ficusginseng", "palmtree"].includes(name)) categories.push("Rare Botanical Treasure");
 
     if (categories.length === 0) categories.push("Medicinal Herbs");
 

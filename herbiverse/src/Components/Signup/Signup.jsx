@@ -48,9 +48,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white-100">
+    <div className="flex justify-center items-center h-screen bg-gradient-to-b from-[#FFFAF7] to-[#DCFCE7] fixed overflow-y-auto inset-0 min-h-screen text-center py-12 px-4">
       {/* Container with flexbox - Increased width */}
-      <div className="bg-gradient-to-br from-[#FFFAF7] via-[#FFFAF7] to-green-100 p-10 border border-gray-200 rounded-2xl shadow-lg flex w-[900px] h-[500px] backdrop-blur-lg">
+      <div className="bg-gradient-to-b from-[#FFFAF7] via-[#FFFAF7] to-green-100 p-10 border border-[156b32] rounded-2xl shadow-lg flex w-[900px] h-[500px] backdrop-blur-lg">
         {/* Left Side - Enlarged Lottie Animation */}
         <div className="flex justify-center items-center w-1/2">
           <Lottie animationData={signupAnimation} loop={true} className="w-80 h-80" />
