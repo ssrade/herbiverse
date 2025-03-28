@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Linkedin, Instagram, Mail, Github, ArrowRight, User } from 'lucide-react';
+import { Linkedin, Mail, Github, ArrowRight, User } from 'lucide-react';
+import himesh from "/Photos/himesh.jpg"
 
 const AboutUs = () => {
   const [selectedMember, setSelectedMember] = useState(null);
@@ -8,43 +9,43 @@ const AboutUs = () => {
   const teamMembers = [
     {
       id: 1,
-      name: 'Alex Johnson',
-      role: 'Frontend Developer',
+      name: 'Himesh Laddha',
+      role: 'MERN stack Developer',
       pronouns: 'they/them',
       description: 'Passionate about creating intuitive, accessible web experiences that bridge design and functionality.',
-      skills: ['React', 'TypeScript', 'Design Systems', 'Web Accessibility'],
-      photo: '/team/alex.jpg',
-      linkedin: 'https://linkedin.com/in/alexjohnson',
-      github: 'alexjohnson',
-      email: 'alex@company.com'
+      skills: ['React', 'Javascript', 'Tailwind CSS', 'Node.js', 'Express.js', 'Three.js'],
+      photo: himesh,
+      linkedin: 'www.linkedin.com/in/himesh-laddha-00bb47293',
+      github: 'HimeshLaddha',
+      email: 'himeshladdha@gmail.com'
     },
     {
       id: 2,
-      name: 'Sarah Williams',
+      name: 'Shubham Rade',
       role: 'Backend Engineer',
       pronouns: 'she/her',
       description: 'Cloud infrastructure expert specializing in scalable, secure system architectures.',
       skills: ['Kubernetes', 'Microservices', 'Cloud Native', 'Security'],
       photo: '/team/sarah.jpg',
-      linkedin: 'https://linkedin.com/in/sarahwilliams',
-      github: 'sarahwilliams',
-      email: 'sarah@company.com'
+      linkedin: 'https://www.linkedin.com/in/shubham-rade-10646b28a/',
+      github: 'ssrade',
+      email: 'shubhamrade27@gmail.com'
     },
     {
       id: 3,
-      name: 'Michael Chen',
+      name: 'Aaditya Rasal',
       role: 'Product Manager',
       pronouns: 'he/him',
       description: 'Bridging technology and user needs through strategic product development and user-centric design.',
       skills: ['Product Strategy', 'UX Research', 'Agile Methodologies', 'Customer Empathy'],
       photo: '/team/michael.jpg',
-      linkedin: 'https://linkedin.com/in/michaelchen',
-      github: 'michaelchen',
-      email: 'michael@company.com'
+      linkedin: 'https://www.linkedin.com/in/aadityarasal2005/',
+      github: 'spirltwirl',
+      email: 'rasalaaditya246@gmail.com'
     },
     {
       id: 4,
-      name: 'Priya Patel',
+      name: 'Amar Raykar',
       role: 'UX Designer',
       pronouns: 'she/her',
       description: 'Creating beautiful, intuitive interfaces with a focus on inclusive design principles.',
@@ -56,7 +57,7 @@ const AboutUs = () => {
     },
     {
       id: 5,
-      name: 'David Kim',
+      name: 'Pritik Nanwani',
       role: 'DevOps Engineer',
       pronouns: 'he/him',
       description: 'Automation enthusiast who builds robust CI/CD pipelines and cloud infrastructure.',
