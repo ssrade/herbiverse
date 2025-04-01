@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Linkedin, Mail, Github, ArrowRight, User } from 'lucide-react';
 import himesh from "/Photos/himesh.jpg"
+import aaditya from "/Photos/Aaditya.jpg"
+import pritik from "/Photos/pritik.jpg"
+import shubham from"/Photos/shubham.jpg"
+import amar from"/Photos/amar.jpg"
 
 const AboutUs = () => {
   const [selectedMember, setSelectedMember] = useState(null);
@@ -11,7 +15,7 @@ const AboutUs = () => {
       id: 1,
       name: 'Himesh Laddha',
       role: 'MERN stack Developer',
-      pronouns: 'they/them',
+      pronouns: 'he/him',
       description: 'Passionate about creating intuitive, accessible web experiences that bridge design and functionality.',
       skills: ['React', 'Javascript', 'Tailwind CSS', 'Node.js', 'Express.js', 'Three.js'],
       photo: himesh,
@@ -23,10 +27,10 @@ const AboutUs = () => {
       id: 2,
       name: 'Shubham Rade',
       role: 'Backend Engineer',
-      pronouns: 'she/her',
+      pronouns: 'he/him',
       description: 'Cloud infrastructure expert specializing in scalable, secure system architectures.',
       skills: ['Kubernetes', 'Microservices', 'Cloud Native', 'Security'],
-      photo: '/team/sarah.jpg',
+      photo: shubham,
       linkedin: 'https://www.linkedin.com/in/shubham-rade-10646b28a/',
       github: 'ssrade',
       email: 'shubhamrade27@gmail.com'
@@ -38,7 +42,7 @@ const AboutUs = () => {
       pronouns: 'he/him',
       description: 'Bridging technology and user needs through strategic product development and user-centric design.',
       skills: ['Product Strategy', 'UX Research', 'Agile Methodologies', 'Customer Empathy'],
-      photo: '/team/michael.jpg',
+      photo: aaditya,
       linkedin: 'https://www.linkedin.com/in/aadityarasal2005/',
       github: 'spirltwirl',
       email: 'rasalaaditya246@gmail.com'
@@ -47,13 +51,13 @@ const AboutUs = () => {
       id: 4,
       name: 'Amar Raykar',
       role: 'UX Designer',
-      pronouns: 'she/her',
+      pronouns: 'he/him',
       description: 'Creating beautiful, intuitive interfaces with a focus on inclusive design principles.',
       skills: ['Figma', 'User Testing', 'Prototyping', 'Illustration'],
-      photo: '/team/priya.jpg',
-      linkedin: 'https://linkedin.com/in/priyapatel',
-      github: 'priyapatel',
-      email: 'priya@company.com'
+      photo: amar,
+      linkedin: 'https://www.linkedin.com/in/amar-raykar-40436a28a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+      github: 'Amarraykar07',
+      email: 'raykaramar7@gmail.com'
     },
     {
       id: 5,
@@ -62,7 +66,7 @@ const AboutUs = () => {
       pronouns: 'he/him',
       description: 'Automation enthusiast who builds robust CI/CD pipelines and cloud infrastructure.',
       skills: ['AWS', 'Terraform', 'Docker', 'CI/CD'],
-      photo: '/team/david.jpg',
+      photo: pritik,
       linkedin: 'https://linkedin.com/in/davidkim',
       github: 'davidkim',
       email: 'david@company.com'
