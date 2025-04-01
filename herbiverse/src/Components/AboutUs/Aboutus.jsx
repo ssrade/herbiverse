@@ -15,7 +15,7 @@ const AboutUs = () => {
       description: 'Passionate about creating intuitive, accessible web experiences that bridge design and functionality.',
       skills: ['React', 'Javascript', 'Tailwind CSS', 'Node.js', 'Express.js', 'Three.js'],
       photo: himesh,
-      linkedin: 'www.linkedin.com/in/himesh-laddha-00bb47293',
+      linkedin: 'https://www.linkedin.com/in/himesh-laddha-00bb47293/',
       github: 'HimeshLaddha',
       email: 'himeshladdha@gmail.com'
     },
