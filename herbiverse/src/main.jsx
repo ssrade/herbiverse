@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Home from './Components/Home/Home.jsx'
 import Herbcatalog from './Components/Herbcatalog/Herbcatalog.jsx'
+import RareSpecies from './Components/RareSpecies/RareSpecies.jsx'
 import Layout from './Layout.jsx'
 import ModelViewer from './Components/Herb/Modelviewer.jsx'
 import Login from './Components/Login/Login.jsx'
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<Layout />}>
       <Route path='' element={<Home/>}></Route>
       <Route path='/Herbcatalog' element={<Herbcatalog/>}></Route>
+      <Route path='/Rarespecies' element={<RareSpecies/>}></Route>
       <Route path='/Login' element={<Login/>}></Route>
       <Route path='/Signup' element={<Signup/>}></Route>
       <Route path='/Favourite' element={<Favourite/>}></Route>
