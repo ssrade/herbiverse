@@ -393,20 +393,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Virtual Garden Tour Section */}
-      <section className="text-center mt-10">
-        <h2 className="text-4xl font-extrabold text-green-700">Take a Virtual Garden Tour</h2>
-        <p className="text-gray-600 text-lg mt-2">
-          Explore a digital garden filled with medicinal plants. Click on plants to learn about their uses, origins, and benefits.
-        </p>
-        <div className="flex justify-center mt-6">
-          {/* <img src={garden} alt="Virtual Garden" className="w-3/4 rounded-lg shadow-xl transform hover:scale-105 transition-all duration-300" /> */}
-        </div>
-        <button className="mt-6 bg-gradient-to-r from-green-600 to-green-800 text-white px-8 py-3 rounded-full flex items-center mx-auto shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 hover:rotate-1">
-          Start Exploring <span className="ml-2">➡</span>
-        </button>
-      </section>
-
       {/* Footer */}
       <footer className="bg-emerald-600 text-white py-10 mt-16">
         <div className="text-center">
