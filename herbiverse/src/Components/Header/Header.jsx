@@ -116,7 +116,7 @@ useEffect(() => {
         <div className="hidden md:flex flex-grow justify-center space-x-6 text-md font-semibold">
           <NavLink to="/" className="hover:text-gray-500">HOME</NavLink>
           <NavLink to="/Herbcatalog" className="hover:text-gray-500">HERB CATALOG</NavLink>
-          <NavLink to="/virtual-tour" className="hover:text-gray-500">VIRTUAL TOUR</NavLink>
+          <NavLink to="/Rarespecies" className="hover:text-gray-500">RARE SPECIES</NavLink>
           {isAuthenticated && (
             <NavLink to="/favourite" className="hover:text-gray-500">FAVOURITES</NavLink>
           )}
