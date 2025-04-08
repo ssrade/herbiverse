@@ -11,7 +11,7 @@ import ModelViewer from './Components/Herb/Modelviewer.jsx'
 import Login from './Components/Login/Login.jsx'
 import Signup from './Components/Signup/Signup.jsx'
 import Favourite from './Components/Favourite/Favourite.jsx'
-import AboutUs from './Components/AboutUS/Aboutus.jsx'
+import AboutUs from './Components/AboutUs/Aboutus.jsx'
 import { AuthProvider } from "./context/AuthContext.jsx";  // Note: Use named import with curly braces
 
 const router = createBrowserRouter(
